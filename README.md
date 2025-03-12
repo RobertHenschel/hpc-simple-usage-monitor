@@ -18,3 +18,22 @@ The application was build to run on Indiana Universities RED system, and I am in
 - Memory alert when memory usage is at or above 50% (orange) or 80% (red) of 100GB limit.
 - CPU alert when CPU usage is at or above 20% (orange) or 40% (red) of total node.
 - App Feedback/Bug Report: Send a bug report or feedback to the developer, can include screenshots.
+
+# Running
+- Open a terminal
+- Clone this repo
+  - `git clone https://github.com/RobertHenschel/hpc-simple-usage-monitor.git`
+  - Need to put in your IU Network ID (not email!) and IU passphrase.
+- Change into the repo directory
+  - `cd hpc-simple-usage-monitor/`
+- Create a python virtual environment
+  - `python3 -m venv ./venv`
+- Activate the environment
+  - `source ./venv/bin/activate`
+- Upgrade pip
+  - `pip install --upgrade pip`
+  - This step may or may not be required, depending on your setup. 
+- Install the required python packages
+  - `pip install -r requirements.txt`
+- Start the app
+  - `python3 ./SimpleUsageMonitor.py`
