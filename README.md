@@ -11,9 +11,9 @@ If sending of email messages via the `mail` command is available on the system, 
   - Toggle legend: Show or hide the legend.
   - Minimal mode: Hide the legend and axis labels to show more of the chart.
 - Save settings: Window geometry and view state are saved between launches.
-- Memory alert when memory usage is at or above 50% (orange) or 80% (red) of 100GB limit.
-- CPU alert when CPU usage is at or above 20% (orange) or 40% (red) of total node.
-- App Feedback/Bug Report: Send a bug report or feedback to the developer, can include screenshots.
+- Memory alert when memory usage is at or above 50% (orange) or 80% (red) of 100GB limit. (configurable)
+- CPU alert when CPU usage is at or above 20% (orange) or 40% (red) of total node. (configurable)
+- App Feedback/Bug Report: Send a bug report or feedback, can include screenshots. (configurable email address)
 
 # Running
 - Open a terminal
