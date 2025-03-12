@@ -23,8 +23,7 @@ The application was build to run on Indiana Universities RED system, and I am in
 - Open a terminal
 - Clone this repo
   - `git clone https://github.com/RobertHenschel/hpc-simple-usage-monitor.git`
-  - Need to put in your IU Network ID (not email!) and IU passphrase.
-- Change into the repo directory
+  - Change into the repo directory
   - `cd hpc-simple-usage-monitor/`
 - Create a python virtual environment
   - `python3 -m venv ./venv`
