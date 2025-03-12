@@ -4,10 +4,6 @@ The goal of this application is to make users aware of their resource consumptio
 If sending of email messages via the `mail` command is available on the system, the application allows users to submit feedback or a bug report with the push of a button. Attaching a screenshot of the application or the whole desktop is also supported.
 ![image](https://github.com/user-attachments/assets/3ad54b62-4054-4635-8502-3a14df22a8e2)
 
-
-
-The application was build to run on Indiana Universities RED system, and I am in the process of making it more general so it will run on other systems as well. [Contact me](https://github.com/RobertHenschel) if you are interested in testing it out.
-
 # Features
 - System tray icon that changes color (green/orange/red) based on user resource consumption.
 - 3 views:
@@ -36,3 +32,8 @@ The application was build to run on Indiana Universities RED system, and I am in
   - `pip install -r requirements.txt`
 - Start the app
   - `python3 ./SimpleUsageMonitor.py`
+
+# How to Contribute
+The application was build to run on Indiana Universities RED system, and I have refactored it to be more general. It should run on most Linux systems now. [Contact me](https://github.com/RobertHenschel) if you want to share your feedback.
+
+
