@@ -107,11 +107,6 @@ class SystemMonitor(QMainWindow):
         self.minimal_button.triggered.connect(self.toggle_minimal)
         toolbar.addAction(self.minimal_button)
         
-        # Add Clear Message button
-        self.clear_message_button = QAction(strings.CLEAR_ALERT_BUTTON, self)
-        self.clear_message_button.triggered.connect(self.clear_status_message)
-        toolbar.addAction(self.clear_message_button)
-        
         # Add spacer to push feedback button to the right
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -227,13 +222,6 @@ class SystemMonitor(QMainWindow):
         show_action.triggered.connect(self.show)
         hide_action = tray_menu.addAction(strings.TRAY_HIDE)
         hide_action.triggered.connect(self.hide)
-        
-        # Add separator
-        tray_menu.addSeparator()
-        
-        # Add Clear Alert option
-        clear_alert_action = tray_menu.addAction(strings.TRAY_CLEAR_ALERT)
-        clear_alert_action.triggered.connect(self.clear_status_message)
         
         # Add separator
         tray_menu.addSeparator()
@@ -444,15 +432,35 @@ class SystemMonitor(QMainWindow):
         rounded_gb = round(memory_gb)
         
         # Check thresholds and set status messages with time
+        # Determine if we're in an alert state
+        alert_active = False
+        alert_color = "green"
+        alert_message = ""
+        
         if memory_gb >= settings.MEMORY_HIGH_THRESHOLD:
-            self.set_status_message(strings.STATUS_MEM_HIGH.format(current_time, rounded_gb), "red")
+            alert_message = strings.STATUS_MEM_HIGH.format(current_time, rounded_gb)
+            alert_color = "red"
+            alert_active = True
         elif memory_gb >= settings.MEMORY_MEDIUM_THRESHOLD:
-            self.set_status_message(strings.STATUS_MEM_MEDIUM.format(current_time, rounded_gb), "orange")
+            alert_message = strings.STATUS_MEM_MEDIUM.format(current_time, rounded_gb)
+            alert_color = "orange"
+            alert_active = True
         
         if user_cpu >= settings.CPU_HIGH_THRESHOLD:
-            self.set_status_message(strings.STATUS_CPU_HIGH.format(current_time), "red")
+            alert_message = strings.STATUS_CPU_HIGH.format(current_time)
+            alert_color = "red"
+            alert_active = True
         elif user_cpu >= settings.CPU_MEDIUM_THRESHOLD:
-            self.set_status_message(strings.STATUS_CPU_MEDIUM.format(current_time), "orange")
+            alert_message = strings.STATUS_CPU_MEDIUM.format(current_time)
+            alert_color = "orange"
+            alert_active = True
+        
+        # Set or clear the alert based on current state
+        if alert_active:
+            self.set_status_message(alert_message, alert_color)
+        else:
+            # Clear alert if both CPU and memory are below thresholds
+            self.clear_status_message()
        
         # Update data
         self.times.append(self.current_time)
