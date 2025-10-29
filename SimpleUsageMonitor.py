@@ -14,7 +14,7 @@ import settings  # Import settings
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon, QPixmap, QColor
 import pyqtgraph as pg
-from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QLabel, QDialog, QTextEdit, QPushButton, QVBoxLayout, QSpacerItem, QSizePolicy, QCheckBox, QSystemTrayIcon, QMenu
+from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QLabel, QDialog, QTextEdit, QPushButton, QVBoxLayout, QSpacerItem, QSizePolicy, QCheckBox, QSystemTrayIcon, QMenu, QMessageBox
 from PyQt5.QtCore import QTimer, QSettings, Qt
 from PyQt5.QtWidgets import QAction
 from PyQt5.QtGui import QFontMetrics
@@ -689,6 +689,16 @@ class SystemMonitor(QMainWindow):
 
     def show_feedback_dialog(self):
         """Show dialog for sending feedback"""
+        # Check if email is still set to default value
+        if settings.FEEDBACK_EMAIL == "your-email@your-domain.something":
+            QMessageBox.warning(
+                self,
+                "Email Not Configured",
+                "The email function needs to be configured in settings.py before you can send feedback.\n\n"
+                "Please update the FEEDBACK_EMAIL setting with a valid email address."
+            )
+            return
+        
         dialog = FeedbackDialog(self)
         result = dialog.exec_()
         
