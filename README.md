@@ -15,6 +15,7 @@ If sending of email messages via the `mail` command is available on the system, 
 - Memory alert when memory usage is at or above 50% (orange) or 80% (red) of 100GB limit. (configurable)
 - CPU alert when CPU usage is at or above 20% (orange) or 40% (red) of total node. (configurable)
 - App Feedback/Bug Report: Send a bug report or feedback, can include screenshots. (configurable email address)
+- Memory chart can indicate memory limit as a line in the chart (configurable)
 
 # Running
 - Open a terminal
