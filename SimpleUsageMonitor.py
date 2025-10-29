@@ -118,17 +118,10 @@ class SystemMonitor(QMainWindow):
         toolbar.addAction(self.feedback_button)
         
         # Create central widget and layout
-        central_widget = QWidget()
-        self.setCentralWidget(central_widget)
-        self.main_layout = QVBoxLayout(central_widget)
+        self.central_widget = QWidget()
+        self.setCentralWidget(self.central_widget)
+        self.main_layout = QVBoxLayout(self.central_widget)
         self.main_layout.setSpacing(10)  # Add some spacing between elements
-        
-        # Add status message label (initially hidden)
-        self.status_message = QLabel()
-        self.status_message.setAlignment(Qt.AlignCenter)
-        self.status_message.setStyleSheet("font-size: 14px; font-weight: bold; padding: 5px;")
-        self.status_message.setVisible(False)  # Initially hidden
-        self.main_layout.addWidget(self.status_message)
         
         # Create charts layout with equal spacing
         charts_layout = QHBoxLayout()
@@ -210,6 +203,16 @@ class SystemMonitor(QMainWindow):
 
         # After all UI elements are created, restore settings
         self.restore_settings()
+        
+        # Create floating status message label (overlay on top of charts)
+        self.status_message = QLabel(self.central_widget)
+        self.status_message.setAlignment(Qt.AlignCenter)
+        self.status_message.setStyleSheet("font-size: 14px; font-weight: bold; padding: 10px; background-color: rgba(255, 255, 255, 200); border-radius: 5px;")
+        self.status_message.setVisible(False)  # Initially hidden
+        self.status_message.raise_()  # Ensure it's on top
+        
+        # Position the floating message
+        self.position_status_message()
 
     def setup_system_tray(self):
         """Setup system tray icon with green color initially"""
@@ -600,23 +603,49 @@ class SystemMonitor(QMainWindow):
         self.save_settings()
         super().closeEvent(event)
 
+    def position_status_message(self):
+        """Position the floating status message at the top center of the charts area"""
+        if not hasattr(self, 'status_message'):
+            return
+            
+        # Calculate position: centered horizontally, near the top of central widget
+        margin = 15
+        y_position = margin  # Position at top of central widget with margin
+        
+        # Set width to fit content, but limit to window width - margins
+        self.status_message.adjustSize()
+        max_width = self.central_widget.width() - (2 * margin)
+        if self.status_message.width() > max_width:
+            self.status_message.setFixedWidth(max_width)
+        else:
+            self.status_message.setMaximumWidth(max_width)
+        
+        # Center horizontally within the central widget
+        x_position = (self.central_widget.width() - self.status_message.width()) // 2
+        
+        # Set the position relative to central widget (0,0 is top-left of central widget)
+        self.status_message.move(x_position, y_position)
+
     def set_status_message(self, message, color="black"):
         """Set a status message with specified color. Empty message hides the label."""
         if not message:
             self.status_message.setVisible(False)
             return
             
-        # Get available width for text
-        available_width = self.width() - 40  # Subtract some padding
+        # Set text and color with semi-transparent background
+        self.status_message.setText(message)
+        self.status_message.setStyleSheet(
+            f"font-size: 14px; font-weight: bold; padding: 10px; "
+            f"color: {color}; "
+            f"background-color: rgba(255, 255, 255, 230); "
+            f"border: 2px solid {color}; "
+            f"border-radius: 5px;"
+        )
         
-        # Check if text needs to be truncated
-        font_metrics = QFontMetrics(self.status_message.font())
-        elided_text = font_metrics.elidedText(message, Qt.ElideRight, available_width)
-        
-        # Set text and color
-        self.status_message.setText(elided_text)
-        self.status_message.setStyleSheet(f"font-size: 14px; font-weight: bold; padding: 5px; color: {color};")
+        # Position and show the message
+        self.position_status_message()
         self.status_message.setVisible(True)
+        self.status_message.raise_()  # Ensure it's on top
         
         # Update tray icon color to match alert color
         self.set_tray_icon_color(color)
@@ -629,17 +658,12 @@ class SystemMonitor(QMainWindow):
         self.set_tray_icon_color("green")
 
     def resizeEvent(self, event):
-        """Handle window resize to update message truncation if needed."""
+        """Handle window resize to reposition floating message if needed."""
         super().resizeEvent(event)
         
-        # If message is visible, update its truncation
-        if self.status_message.isVisible():
-            current_text = self.status_message.text()
-            # If text ends with ellipsis, we need to recalculate with original text
-            if current_text.endswith('...'):
-                # This is a simplification - in a real app you might want to store the original text
-                self.set_status_message(current_text.rstrip('...') + "...", 
-                                      self.status_message.styleSheet().split('color: ')[1].split(';')[0])
+        # Reposition the status message if it exists and is visible
+        if hasattr(self, 'status_message') and self.status_message.isVisible():
+            self.position_status_message()
 
     def show_feedback_dialog(self):
         """Show dialog for sending feedback"""
