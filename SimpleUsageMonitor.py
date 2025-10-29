@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys
 import psutil
 from collections import deque
@@ -276,6 +277,13 @@ class SystemMonitor(QMainWindow):
         plot_widget.setLabel('bottom', strings.TIME_AXIS_LABEL, color='k')
         plot_widget.showGrid(x=True, y=True)
         plot_widget.setYRange(0, 100)
+        
+        # Hide the auto-scale button
+        plot_widget.hideButtons()
+        
+        # Disable mouse interaction (panning, zooming, etc.)
+        plot_widget.setMouseEnabled(x=False, y=False)
+        plot_widget.getViewBox().setMenuEnabled(False)
         
         # Set initial X range from 1 to max_points
         plot_widget.setXRange(1, self.max_points)
