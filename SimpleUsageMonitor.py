@@ -168,6 +168,28 @@ class SystemMonitor(QMainWindow):
         mem_layout.addWidget(self.mem_plot['widget'])
         mem_layout.addWidget(self.mem_label)
         
+        # Add memory limit line if enabled
+        if settings.DRAW_MEMORY_LINE:
+            # Calculate label position based on text width
+            label_text = f'{settings.MEMORY_LIMIT_GB}GB limit'
+            font_metrics = QFontMetrics(self.mem_plot['widget'].font())
+            label_width = font_metrics.horizontalAdvance(label_text)
+            # Add some padding (20 pixels) to ensure label doesn't touch the edge
+            padding = 0
+            # Calculate position: use plot width estimation or fallback to safe value
+            plot_width = self.window_width // 2  # Half window width for each plot
+            # Position is fraction from 0 to 1, calculate so label ends before right edge
+            label_position = max(0.1, 1.0 - (label_width + padding) / plot_width)
+            
+            memory_limit_line = pg.InfiniteLine(
+                pos=self.max_memory_percent,
+                angle=0,
+                pen=pg.mkPen('k', width=2, style=Qt.DashLine),
+                label=label_text,
+                labelOpts={'position': label_position, 'color': (0, 0, 0), 'fill': (200, 200, 200, 100)}
+            )
+            self.mem_plot['widget'].addItem(memory_limit_line)
+        
         # Store the full text versions for memory label
         self.mem_full_text = strings.MEM_LABEL_FULL + f" ({settings.MEMORY_LIMIT_GB}GB)"
         self.mem_compact_text = strings.MEM_LABEL_COMPACT

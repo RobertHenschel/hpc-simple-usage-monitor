@@ -23,10 +23,13 @@ CPU_HIGH_THRESHOLD = 40.0  # Red alert threshold
 CPU_MEDIUM_THRESHOLD = 20.0  # Orange alert threshold 
 
 # System limits
-# This limit is enforced by cgroups, and users cannot exceed it.
-# If your system doesn't support cgroups, you still need this here
-# to avoid errors.
-MEMORY_LIMIT_GB = 100  # Memory limit in GB
+# If the system has memory limits for users, for example using cgroups,
+# you can set the MEMORY_LIMIT_GB and DRAW_MEMORY_LINE to True to draw a 
+# ine at the memory limit in the memory plot.
+# If your system doesn't support cgroups, you still need MEMORY_LIMIT_GB defined
+# to avoid errors. But then set DRAW_MEMORY_LINE to False.
+MEMORY_LIMIT_GB = 100    # Memory limit in GB
+DRAW_MEMORY_LINE = True  # Draw a line at the memory limit in the memory plot
 
 # Application resources
 APP_ICON = "icon.png"
