@@ -36,6 +36,10 @@ If sending of email messages via the `mail` command is available on the system, 
 - Start the app
   - `python3 ./SimpleUsageMonitor.py`
 
+# Notes
+- For the "Send App Feedback/Bug Report" function to work, `mail` needs to be installed and configured on the system
+- The app doesn't rely on cgroups or detect cgroups. The limits that can be configured are purely for display and are not enforced by the app.
+
 # How to Contribute
 The application was build to run on Indiana Universities RED system, and I have refactored it to be more general. It should run on most Linux systems now. [Contact me](https://github.com/RobertHenschel) if you want to share your feedback.
 
