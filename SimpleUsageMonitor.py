@@ -15,6 +15,7 @@ import settings  # Import settings
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtGui import QIcon, QPixmap, QColor
 import pyqtgraph as pg
+from pyqtgraph import AxisItem
 from PyQt5.QtWidgets import QMainWindow, QHBoxLayout, QVBoxLayout, QWidget, QLabel, QDialog, QTextEdit, QPushButton, QVBoxLayout, QSpacerItem, QSizePolicy, QCheckBox, QSystemTrayIcon, QMenu, QMessageBox
 from PyQt5.QtCore import QTimer, QSettings, Qt
 from PyQt5.QtWidgets import QAction
@@ -289,7 +290,21 @@ class SystemMonitor(QMainWindow):
             self.tray_icon.setToolTip(strings.TRAY_TOOLTIP_DEFAULT)
 
     def setup_plot(self, title, ylabel):
-        plot_widget = pg.PlotWidget()
+        # Create custom axis with tick formatter to show -60 to 0
+        class CustomAxis(AxisItem):
+            def tickStrings(self, values, scale, spacing):
+                # Map x-axis values (60 to 1) to labels (-60 to 0)
+                # Linear mapping: f(v) = (max_points/(max_points-1)) * (1 - v)
+                # This gives: v=60→-60, v=1→0
+                # Reverse the labels to fix display order
+                labels = [str(int(round((self.max_points / (self.max_points - 1.0)) * (1 - v)))) for v in values]
+                return list(reversed(labels))
+        
+        # Create custom axis instance
+        custom_axis = CustomAxis(orientation='bottom')
+        custom_axis.max_points = self.max_points
+        
+        plot_widget = pg.PlotWidget(axisItems={'bottom': custom_axis})
         
         # Setup plot
         plot_widget.setBackground('w')
