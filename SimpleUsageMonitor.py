@@ -7,6 +7,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 import subprocess
 import tempfile
+import shutil
 import strings  # Import externalized strings
 import settings  # Import settings
 
@@ -696,6 +697,16 @@ class SystemMonitor(QMainWindow):
                 "Email Not Configured",
                 "The email function needs to be configured in settings.py before you can send feedback.\n\n"
                 "Please update the FEEDBACK_EMAIL setting with a valid email address."
+            )
+            return
+        
+        # Check if mail binary exists
+        if not shutil.which('mail'):
+            QMessageBox.warning(
+                self,
+                "Mail Binary Not Found",
+                "The 'mail' command is not available on this system.\n\n"
+                "Please install a mail client (e.g., mailutils, mailx, or sendmail) to enable the feedback feature."
             )
             return
         
