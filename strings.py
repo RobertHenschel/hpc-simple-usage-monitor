@@ -15,6 +15,7 @@ FEEDBACK_DIALOG_TITLE = "Send Simple Usage Monitor Feedback"
 # Toolbar buttons
 TOGGLE_LEGEND_BUTTON = "Toggle Legend"
 MINIMAL_VIEW_BUTTON = "Minimal"
+TOGGLE_OTHERS_BUTTON = "Toggle Other Users"
 SEND_FEEDBACK_BUTTON = "Send App Feedback/Bug Report"
 CLEAR_ALERT_BUTTON = "Clear Alert"
 

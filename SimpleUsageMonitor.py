@@ -97,7 +97,7 @@ class SystemMonitor(QMainWindow):
         # Add Toggle Legend button
         self.toggle_button = QAction(strings.TOGGLE_LEGEND_BUTTON, self)
         self.toggle_button.setCheckable(True)
-        self.toggle_button.setChecked(False)
+        self.toggle_button.setChecked(True)  # Default to legend visible
         self.toggle_button.triggered.connect(self.toggle_legend)
         toolbar.addAction(self.toggle_button)
         
@@ -535,7 +535,7 @@ class SystemMonitor(QMainWindow):
 
     def toggle_legend(self):
         # Toggle visibility of legend section
-        is_visible = not self.toggle_button.isChecked()
+        is_visible = self.toggle_button.isChecked()
         self.guidelines_label.setVisible(is_visible)
         self.legend_label.setVisible(is_visible)
         
@@ -585,11 +585,11 @@ class SystemMonitor(QMainWindow):
             self.mem_label.setVisible(False)
             self.guidelines_label.setVisible(False)
             self.legend_label.setVisible(False)
-            # Force legend button to unchecked state
-            self.toggle_button.setChecked(True)
+            # Force legend button to unchecked state (no legend in minimal mode)
+            self.toggle_button.setChecked(False)
         else:
             # Restore previous legend state
-            is_legend_visible = not self.toggle_button.isChecked()
+            is_legend_visible = self.toggle_button.isChecked()
             self.cpu_label.setVisible(True)
             self.mem_label.setVisible(True)
             self.guidelines_label.setVisible(is_legend_visible)
@@ -619,14 +619,12 @@ class SystemMonitor(QMainWindow):
             # Use default geometry if no saved settings
             self.setGeometry(100, 100, self.window_width, self.window_height)
         
-        # Restore and apply compact state
-        is_compact = self.settings.value('compact_view', False, type=bool)
-        if is_compact:
-            # Hide legend elements if we're in compact mode
-            self.guidelines_label.setVisible(False)
-            self.legend_label.setVisible(False)
-            # Update button state
-            self.toggle_button.setChecked(True)
+        # Restore show legend state (default to True/visible)
+        show_legend = self.settings.value('show_legend', True, type=bool)
+        self.toggle_button.setChecked(show_legend)
+        # Apply the visibility setting
+        self.guidelines_label.setVisible(show_legend)
+        self.legend_label.setVisible(show_legend)
         
         # Restore minimal state
         is_minimal = self.settings.value('minimal_view', False, type=bool)
@@ -645,7 +643,7 @@ class SystemMonitor(QMainWindow):
     def save_settings(self):
         # Save window geometry and view states
         self.settings.setValue('window_geometry', self.saveGeometry())
-        self.settings.setValue('compact_view', self.toggle_button.isChecked())
+        self.settings.setValue('show_legend', self.toggle_button.isChecked())
         self.settings.setValue('minimal_view', self.minimal_button.isChecked())
         self.settings.setValue('show_others', self.toggle_others_button.isChecked())
 
