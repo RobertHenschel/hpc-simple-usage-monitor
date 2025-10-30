@@ -108,6 +108,13 @@ class SystemMonitor(QMainWindow):
         self.minimal_button.triggered.connect(self.toggle_minimal)
         toolbar.addAction(self.minimal_button)
         
+        # Add Toggle Other Users button
+        self.toggle_others_button = QAction(strings.TOGGLE_OTHERS_BUTTON, self)
+        self.toggle_others_button.setCheckable(True)
+        self.toggle_others_button.setChecked(False)  # Default to off
+        self.toggle_others_button.triggered.connect(self.toggle_other_users)
+        toolbar.addAction(self.toggle_others_button)
+        
         # Add spacer to push feedback button to the right
         spacer = QWidget()
         spacer.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
@@ -591,6 +598,18 @@ class SystemMonitor(QMainWindow):
         # Save settings
         self.save_settings()
 
+    def toggle_other_users(self):
+        """Toggle visibility of other users' data (red graphs)"""
+        show_others = self.toggle_others_button.isChecked()
+        
+        # Show or hide the others' data in both plots
+        for plot in [self.cpu_plot, self.mem_plot]:
+            plot['others_fill'].setVisible(show_others)
+            plot['others_curve'].setVisible(show_others)
+        
+        # Save the new settings
+        self.save_settings()
+
     def restore_settings(self):
         # Restore window geometry
         geometry = self.settings.value('window_geometry')
@@ -614,12 +633,21 @@ class SystemMonitor(QMainWindow):
         if is_minimal:
             self.minimal_button.setChecked(True)
             self.toggle_minimal()  # Apply minimal mode settings
+        
+        # Restore show other users state (default to False/off)
+        show_others = self.settings.value('show_others', False, type=bool)
+        self.toggle_others_button.setChecked(show_others)
+        # Apply the visibility setting
+        for plot in [self.cpu_plot, self.mem_plot]:
+            plot['others_fill'].setVisible(show_others)
+            plot['others_curve'].setVisible(show_others)
 
     def save_settings(self):
         # Save window geometry and view states
         self.settings.setValue('window_geometry', self.saveGeometry())
         self.settings.setValue('compact_view', self.toggle_button.isChecked())
         self.settings.setValue('minimal_view', self.minimal_button.isChecked())
+        self.settings.setValue('show_others', self.toggle_others_button.isChecked())
 
     def closeEvent(self, event):
         # Save settings when window is closed
